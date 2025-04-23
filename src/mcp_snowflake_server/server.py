@@ -26,10 +26,11 @@ logger = logging.getLogger("mcp_snowflake_server")
 def data_to_yaml(data: Any) -> str:
     return yaml.dump(data, indent=2, sort_keys=False)
 
+
 # Custom serializer that checks for 'date' type
 def data_json_serializer(obj):
-    from datetime import date
-    if isinstance(obj, date):
+    from datetime import date, datetime
+    if isinstance(obj, date) or isinstance(obj, datetime):
         return obj.isoformat()
     else:
         return obj
@@ -308,14 +309,14 @@ async def prefetch_tables(db: SnowflakeDB, credentials: dict) -> dict:
 
 
 async def main(
-    allow_write: bool = False,
-    connection_args: dict = None,
-    log_dir: str = None,
-    prefetch: bool = False,
-    log_level: str = "INFO",
-    exclude_tools: list[str] = [],
-    config_file: str = "runtime_config.json",
-    exclude_patterns: dict = None,
+        allow_write: bool = False,
+        connection_args: dict = None,
+        log_dir: str = None,
+        prefetch: bool = False,
+        log_level: str = "INFO",
+        exclude_tools: list[str] = [],
+        config_file: str = "runtime_config.json",
+        exclude_patterns: dict = None,
 ):
     # Setup logging
     if log_dir:
@@ -476,7 +477,8 @@ async def main(
     if not allow_write:
         exclude_tags.append("write")
     allowed_tools = [
-        tool for tool in all_tools if tool.name not in exclude_tools and not any(tag in exclude_tags for tag in tool.tags)
+        tool for tool in all_tools if
+        tool.name not in exclude_tools and not any(tag in exclude_tags for tag in tool.tags)
     ]
 
     logger.info("Allowed tools: %s", [tool.name for tool in allowed_tools])
@@ -528,7 +530,7 @@ async def main(
     @server.call_tool()
     @handle_tool_errors
     async def handle_call_tool(
-        name: str, arguments: dict[str, Any] | None
+            name: str, arguments: dict[str, Any] | None
     ) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
         if name in exclude_tools:
             return [types.TextContent(type="text", text=f"Tool {name} is excluded from this data connection")]
