@@ -173,6 +173,12 @@ uv --directory /absolute/path/to/mcp_snowflake_server run mcp_snowflake_server
 ```
 
 ---
+### Installing Docker
+#### Be Sure that zscaler.cer is present in the root folder
+```bash
+docker build -t mcp-snowflake-server:0.0.1 .
+```
+---
 
 ## Notes
 

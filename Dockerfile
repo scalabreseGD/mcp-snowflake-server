@@ -15,6 +15,10 @@ COPY README.md .
 COPY runtime_config.json .
 COPY src/ src/
 
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+COPY ./zscaler.cer /usr/local/share/ca-certificates/zscaler.crt
+RUN update-ca-certificates
+
 # Install project dependencies
 RUN pip install --no-cache-dir .
 

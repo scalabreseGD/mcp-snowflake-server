@@ -47,7 +47,7 @@ class SnowflakeDB:
         return self.init_task
 
     async def execute_query(self, query: str) -> tuple[list[dict[str, Any]], str]:
-        """Execute a SQL query and return results as a list of dictionaries"""
+        """Execute ONE SQL query statement and return results as a list of dictionaries"""
         # If init_task exists and isn't done, wait for it to complete
         if self.init_task and not self.init_task.done():
             await self.init_task
